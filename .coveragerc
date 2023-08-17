@@ -1,0 +1,11 @@
+[run]
+source =
+    qtpy_dynamic_font_size_label
+[report]
+omit =
+    #versioning
+    .*version.*
+    *_version.py
+    #tests
+    *test*
+    qtpy_dynamic_font_size_label/tests/*
