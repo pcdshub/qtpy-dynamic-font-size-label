@@ -7,6 +7,7 @@ from ..widgets import DynamicFontSizeLabel, DynamicFontSizePushButton
 
 def create_window() -> QtWidgets.QMainWindow:
     main = QtWidgets.QMainWindow()
+    main.setWindowTitle("DynamicFontSizeLabel and DynamicFontPushButton example")
     main.resize(894, 216)
 
     # The central widget
@@ -81,7 +82,24 @@ def create_window() -> QtWidgets.QMainWindow:
     preferred_label.setSizePolicy(policy)
     main.setCentralWidget(central_widget)
 
-    main.setWindowTitle("DynamicFontSizeLabel and DynamicFontPushButton example")
+    # Our dynamic font label with min expanding size policy
+    exp_label_pad = DynamicFontSizeLabel(
+        "Padded min-expanding",
+        central_widget,
+        pad_percent=0.5,
+    )
+    exp_label_pad.setAlignment(QtCore.Qt.AlignCenter)
+    policy = QtWidgets.QSizePolicy(
+        QtWidgets.QSizePolicy.MinimumExpanding,
+        QtWidgets.QSizePolicy.MinimumExpanding,
+    )
+    policy.setHorizontalStretch(0)
+    policy.setVerticalStretch(0)
+    policy.setHeightForWidth(exp_label_pad.sizePolicy().hasHeightForWidth())
+    exp_label_pad.setSizePolicy(policy)
+    exp_label_pad.setFrameShape(QtWidgets.QFrame.Box)
+    exp_label_pad.setIndent(0)
+    grid_layout.addWidget(exp_label_pad, 2, 2, 1, 1)
     return main
 
 
