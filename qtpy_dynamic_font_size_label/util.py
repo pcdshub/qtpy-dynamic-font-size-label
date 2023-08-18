@@ -92,7 +92,11 @@ def get_widget_maximum_font_size(
     return last_tested_size
 
 
-def patch_widget(widget: QtWidgets.QWidget) -> None:
+def patch_widget(
+    widget: QtWidgets.QWidget,
+    *,
+    pad_percent: float = 0.0,
+) -> None:
     """
     Patch the widget to dynamically change its font.
 
@@ -100,10 +104,18 @@ def patch_widget(widget: QtWidgets.QWidget) -> None:
     ----------
     widget : QtWidgets.QWidget
         The widget to patch.
+    pad_percent : float, optional
+        The normalized padding percentage (0.0 - 1.0) to use in determining the
+        maximum font size. Content margin settings determine the content
+        rectangle, and this padding is applied as a percentage on top of that.
     """
     def paintEvent(event: QtGui.QPaintEvent) -> None:
         font = widget.font()
-        font_size = get_widget_maximum_font_size(widget, widget.text())
+        font_size = get_widget_maximum_font_size(
+            widget, widget.text(),
+            pad_width=widget.width() * pad_percent,
+            pad_height=widget.height() * pad_percent,
+        )
         if abs(font.pointSizeF() - font_size) > 0.1:
             font.setPointSizeF(font_size)
             widget.setFont(font)
@@ -149,7 +161,6 @@ def unpatch_widget(widget: QtWidgets.QWidget) -> None:
         widget.sizeHint,
         widget.minimumSizeHint,
     ) = widget.paintEvent._patched_methods_
-    del widget.paintEvent._patched_methods_
 
 
 def is_patched(widget: QtWidgets.QWidget) -> bool:
